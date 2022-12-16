@@ -1,11 +1,41 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [fName, setFName] = useState("");
-    const [lName, setLName] = useState("");
+
+    useEffect(() => {
+        if (localStorage.getItem('auth-token')) {
+            navigate('/');
+        }
+    }, []);
+
+
+    const navigate = useNavigate();
+
+    const login = async (e) => {
+        e.preventDefault();
+        const response = await fetch('http://localhost:8000/api/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        const json = await response.json();
+        // console.log(json);
+        if (json.message === "logged in successfully" && json.data) {
+            localStorage.setItem('auth-token', json.data);
+            navigate('/');
+        }
+        else {
+            toast.error(json.message);
+        }
+    }
   return (
     <>
         <div className="h-screen md:flex">
@@ -22,7 +52,7 @@ const Login = () => {
                 <div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
             </div>
             <div className="flex md:w-1/2 justify-center py-10 items-center bg-white">
-                <form className="bg-white">
+                <form className="bg-white" onSubmit={login}>
                     <h1 className="text-gray-800 font-bold text-2xl mb-1">Hello Again!</h1>
                     <p className="text-sm font-normal text-gray-600 mb-7">Welcome Back</p>
                     <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
@@ -48,6 +78,7 @@ const Login = () => {
                 </form>
             </div>
         </div>
+    <ToastContainer toastStyle={{ backgroundColor: "#202d40", color: 'white' }} />
     </>
   )
 }
