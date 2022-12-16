@@ -33,4 +33,24 @@ router.post("/", fetchuser, async (req, res) => {
 
 });
 
+router.get("/posts/:title", fetchuser, async (req,res)=>{
+  const requestedTitle = req.params.title;
+  const post = await Post.findOne({title:requestedTitle});
+  res.json(post);
+});
+
+router.post("/delete/:title", fetchuser, async (req,res)=>{
+  try{
+    const requestedTitle = req.params.title;
+    await Post.deleteOne({title:requestedTitle});
+    if(!error){
+      res.json("Post deleted successfully!");
+    }
+  } catch(error){
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
+  }
+
+});
+
 module.exports = router;
