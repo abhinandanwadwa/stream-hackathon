@@ -54,7 +54,7 @@ const Blogs = () => {
                                     <div className="flex items-center space-x-4">
                                         <img className="w-7 h-7 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="Jese Leos avatar" />
                                         <span className="font-medium dark:text-white">
-                                            Jese Leos
+                                            {blog.authorName}
                                         </span>
                                     </div>
                                     <a href="#" className="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline text-white">
