@@ -1,33 +1,33 @@
 const router = require("express").Router();
-const {Post} = require("../models/post.model");
+const Post = require("../models/post.model");
 
 
-router.get("/posts",(req,res)=>{
-    Post.find((err,posts)=>{
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.render("/posts",{posts:posts});
-        }
-    })
+router.get("/posts", async (req,res)=>{
+    const allPosts = await Post.find();
+    res.json(allPosts);
 
 });
 
-router.post("/addPosts",(req,res)=>{
-  const post = new Post({
-    title:req.body.title,
-    about:req.body.about
-  });
+router.post("/", async (req,res)=>{
+  try {
+    const post = await Post.create({
+      title: req.body.title,
+      about: req.body.about
+    });
 
-  post.save((err)=>{
-    if(err){
-      console.log(err);
+    if (post) {
+      return res.status(200).json(post);
     }
-    else{
-        res.redirect("/posts");
-    }
-  });
+    return res.status(500).json({ error: "Internal Server Error" });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
+  }
+
+  
+
+
 
 });
 
